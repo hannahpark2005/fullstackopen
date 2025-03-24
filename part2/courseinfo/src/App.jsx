@@ -22,6 +22,9 @@ const Course = ({ course }) => {
     <div>
       <Header course={course.name} />
       <Content parts={course.parts} />
+      <Total total={course.parts.reduce(
+        (acc, currVal) => acc + currVal.exercises, 0
+      )} />
     </div>
   )
 }
@@ -45,6 +48,11 @@ const App = () => {
         name: 'State of a component',
         exercises: 14,
         id: 3
+      },
+      {
+        name: 'Added part to test app',
+        exercises: 7,
+        id: 4
       }
     ]
   }
