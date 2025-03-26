@@ -13,6 +13,7 @@ const App = () => {
   const [filterName, setFilterName] = useState('')
   const [showAll, setShowAll] = useState(true);
   const [successMessage, setSuccessMessage] = useState('')
+  const [errorMessage, setErrorMessage] = useState('')
 
   // const hook = () => {
   //   console.log('effect')
@@ -48,6 +49,14 @@ const App = () => {
           .then((returnedPerson) => {
             setPersons(persons.map(person => person.id !== changedPerson.id ? person : returnedPerson))
           })
+          .catch(error => {
+            setErrorMessage(
+              `Information of '${changedPerson.name}' has already been removed from server`
+            )
+            setTimeout(() => {
+              setErrorMessage(null)
+            }, 5000)
+          })
 
         setSuccessMessage(
           `Updated ${personObject.name}`
@@ -59,9 +68,11 @@ const App = () => {
         alert(`${personObject.name} is already added to phonebook`)
       }
     } else {
-      personsService.create(personObject).then((returnedPerson) => {
-        setPersons(persons.concat(returnedPerson))
-      })
+      personsService
+        .create(personObject)
+        .then((returnedPerson) => {
+          setPersons(persons.concat(returnedPerson))
+        })
       setSuccessMessage(
         `Added ${personObject.name}`
       )
@@ -114,10 +125,11 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notifications message={errorMessage} type='error'/>
       <Filter filterName={filterName} handleFilterChange={handleFilterChange} />
 
       <h3>Add a new</h3>
-      <Notifications message={successMessage} />
+      <Notifications message={successMessage} type='success'/>
       <PersonForm
         addPerson={addPerson}
         newName={newName}
