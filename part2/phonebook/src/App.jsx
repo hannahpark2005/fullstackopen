@@ -26,10 +26,16 @@ const App = () => {
   // }
 
   useEffect(() => {
-    personsService.getAll().then((initialPersons) => {
+    personsService
+    .getAll()
+    .then((initialPersons) => {
       setPersons(initialPersons)
     })
   }, [])
+
+  if (!persons) {
+    return null
+  }
 
   const addPerson = (event) => {
     event.preventDefault()
