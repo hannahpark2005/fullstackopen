@@ -12,6 +12,10 @@ const App = () => {
     setSearchCountry(event.target.value)
   }
 
+  const handleShow = (countryName) => {
+    setSearchCountry(countryName)
+  }
+
   useEffect(() => {
     countriesService
       .getAll()
@@ -30,7 +34,7 @@ const App = () => {
     <div>
       <SearchCountries searchCountry={searchCountry} handleSearchChange={handleSearchChange} />
 
-      <Countries countriesToShow={countriesToShow} />
+      <Countries countriesToShow={countriesToShow} handleShow={handleShow} />
     </div>
   )
 }
