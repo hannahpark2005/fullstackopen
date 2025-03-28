@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react'
-import axios from 'axios'
 import Filter from './components/Filter'
 import PersonForm from './components/PersonForm'
 import Persons from './components/Persons'
@@ -55,7 +54,7 @@ const App = () => {
           .then((returnedPerson) => {
             setPersons(persons.map(person => person.id !== changedPerson.id ? person : returnedPerson))
           })
-          .catch(error => {
+          .catch(() => {
             setErrorMessage(
               `Information of '${changedPerson.name}' has already been removed from server`
             )
@@ -116,7 +115,7 @@ const App = () => {
         .then(() => {
           setPersons(persons.filter(person => person.id !== id))
         })
-        .catch(error => {
+        .catch(() => {
           alert(
             `the note '${personToDelete.content}' was already deleted from server`
           )
