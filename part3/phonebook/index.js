@@ -1,6 +1,8 @@
 const express = require('express')
 const app = express()
 
+var morgan = require('morgan')
+
 app.use(express.json())
 
 let persons =
@@ -27,6 +29,19 @@ let persons =
         }
     ]
 
+
+morgan.token('body', (req) => {
+    const body = JSON.stringify(req.body)
+    if (body === '{}') {
+        return ''
+    }
+    return body
+})
+
+app.use(
+    morgan(':method :url :status :res[content-length] - :response-time ms :body'),
+)
+
 app.get('/info', (request, response) => {
     response.send(
         `<p>Phonebook has info for ${persons.length} people</p>
@@ -39,22 +54,22 @@ app.get('/api/persons', (request, response) => {
 })
 
 app.get('/api/persons/:id', (request, response) => {
-  const id = request.params.id
-  const person = persons.find(person => person.id === id)
+    const id = request.params.id
+    const person = persons.find(person => person.id === id)
 
-  if (person) {
-    response.json(person)
-  } else {
-    response.statusMessage = `Person with id ${id} does not exist`;
-    response.status(404).end()
-  }
+    if (person) {
+        response.json(person)
+    } else {
+        response.statusMessage = `Person with id ${id} does not exist`;
+        response.status(404).end()
+    }
 })
 
 app.delete('/api/persons/:id', (request, response) => {
-  const id = request.params.id
-  persons = persons.filter(person => person.id !== id)
+    const id = request.params.id
+    persons = persons.filter(person => person.id !== id)
 
-  response.status(204).end()
+    response.status(204).end()
 })
 
 const generateId = () => {
@@ -62,29 +77,30 @@ const generateId = () => {
 }
 
 app.post('/api/persons', (request, response) => {
-  const body = request.body
+    const body = request.body
 
-  if (!body.name || !body.number) {
-    return response.status(400).json({
-      error: 'name or number missing'
-    })
-  }
+    if (!body.name || !body.number) {
+        return response.status(400).json({
+            error: 'name or number missing'
+        })
+    }
 
-  if (persons.find(person => person.name === body.name)) {
-    return response.status(400).json({
-      error: 'name must be unique'
-    })
-  }
+    if (persons.find(person => person.name === body.name)) {
+        return response.status(400).json({
+            error: 'name must be unique'
+        })
+    }
 
-  const person = {
-    "id": generateId(),
-    "name": body.name,
-    "number": body.number
-  }
+    const person = {
+        "id": generateId(),
+        "name": body.name,
+        "number": body.number
+    }
 
-  persons = persons.concat(person)
+    persons = persons.concat(person)
 
-  response.json(person)
+    response.json(person)
+
 })
 
 const PORT = 3001
